@@ -1,125 +1,98 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// Steuert die sequentielle Bewegung von Items von pointA nach pointB.
-/// Die Reihenfolge der Items wird beim Start zufällig gemischt.
-/// </summary>
 public class Conveyor : MonoBehaviour
 {
     [Header("Positions")]
-    public Transform pointA;            // Startposition
-    public Transform pointB;            // Endposition
+    public Transform pointA;
+    public Transform pointB;
 
     [Header("Conveyor Settings")]
-    public float speed = 2f;            // Bewegungsgeschwindigkeit
-    public List<GameObject> items;      // Liste der Items
+    public float speed = 1f;
 
-    private int currentIndex = 0;       // Welches Item dran ist
-    private bool isMoving = false;      // Ob gerade ein Item fährt
+    [Tooltip("Liste von Prefabs, aus denen zufällig gewählt wird.")]
+    public List<GameObject> items; // Prefabs!
 
-    void Start()
-    {
-        if (pointA == null || pointB == null)
-            Debug.LogWarning("ConveyorController: pointA oder pointB ist nicht gesetzt!");
-        if (items == null || items.Count == 0)
-            Debug.LogWarning("ConveyorController: keine Items in der Liste!");
+    // Alle aktuell fahrenden Instanzen
+    private List<GameObject> activeInstances = new List<GameObject>();
 
-        ShuffleItems();   // <<< NEU: mischt die Liste einmal zufällig
-    }
-
-    /// <summary>
-    /// Mischt die Itemliste mit Fisher–Yates Shuffle.
-    /// </summary>
-    private void ShuffleItems()
-    {
-        for (int i = 0; i < items.Count; i++)
-        {
-            int rand = Random.Range(i, items.Count);
-            GameObject temp = items[i];
-            items[i] = items[rand];
-            items[rand] = temp;
-        }
-
-        Debug.Log("Conveyor: Items wurden zufällig gemischt.");
-    }
 
     void Update()
     {
-        if (!isMoving || currentIndex >= items.Count) return;
-
-        GameObject currentItem = items[currentIndex];
-        if (currentItem == null)
+        // Alle Instanzen unabhängig bewegen
+        for (int i = activeInstances.Count - 1; i >= 0; i--)
         {
-            Debug.LogWarning("ConveyorController: current item is null -> skip");
-            isMoving = false;
-            currentIndex++;
-            return;
-        }
+            GameObject inst = activeInstances[i];
+            if (inst == null)
+            {
+                activeInstances.RemoveAt(i);
+                continue;
+            }
 
-        currentItem.transform.position = Vector3.MoveTowards(
-            currentItem.transform.position,
-            pointB.position,
-            speed * Time.deltaTime
-        );
+            inst.transform.position = Vector3.MoveTowards(
+                inst.transform.position,
+                pointB.position,
+                speed * Time.deltaTime
+            );
 
-        if (Vector3.Distance(currentItem.transform.position, pointB.position) < 0.05f)
-        {
-            Debug.Log($"Conveyor: Item angekommen -> {currentItem.name}");
-            isMoving = false;
-            currentIndex++;
+            // Wenn fertig -> löschen
+            if (Vector3.Distance(inst.transform.position, pointB.position) < 0.05f)
+            {
+                Destroy(inst);
+                activeInstances.RemoveAt(i);
+            }
         }
     }
 
+
     /// <summary>
-    /// Startet das nächste Item (vom Button aufgerufen).
+    /// Button ruft das auf -> spawnt 1 zufälliges Item und bewegt es.
     /// </summary>
     public void MoveNextItem()
     {
-        if (currentIndex >= items.Count)
+        if (items == null || items.Count == 0)
         {
-            Debug.Log("ConveyorController: Keine Items mehr.");
+            Debug.LogWarning("Conveyor: Keine Items in der Liste!");
             return;
         }
 
-        GameObject next = items[currentIndex];
-        if (next == null)
+        // Zufälliges Item aus der Liste
+        GameObject prefab = items[Random.Range(0, items.Count)];
+        if (prefab == null)
         {
-            Debug.LogWarning("ConveyorController: next item null -> weiter");
-            currentIndex++;
+            Debug.LogWarning("Conveyor: null Prefab in der Liste!");
             return;
         }
 
-        next.transform.position = pointA.position;
+        // Neue Instanz erstellen
+        GameObject newItem = Instantiate(prefab, pointA.position, Quaternion.identity);
 
-        Rigidbody rb = next.GetComponent<Rigidbody>();
+        // Physik reset
+        Rigidbody rb = newItem.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
 
-        isMoving = true;
-        Debug.Log($"ConveyorController: Starte Item {next.name}");
+        activeInstances.Add(newItem);
+
+        Debug.Log($"Conveyor: Neues Item gestartet -> {newItem.name}");
     }
 
-    /// <summary>
-    /// Reset funktioniert weiterhin wie vorher.
-    /// </summary>
-    public void ResetConveyor(bool teleportToStart = true)
-    {
-        currentIndex = 0;
-        isMoving = false;
 
-        if (teleportToStart && items != null)
+    /// <summary>
+    /// Entfernt alle aktuell fahrenden Instanzen.
+    /// </summary>
+    public void ResetConveyor()
+    {
+        for (int i = 0; i < activeInstances.Count; i++)
         {
-            foreach (var it in items)
-            {
-                if (it != null && pointA != null)
-                    it.transform.position = pointA.position;
-            }
+            if (activeInstances[i] != null)
+                Destroy(activeInstances[i]);
         }
 
-        Debug.Log("ConveyorController: Reset durchgeführt.");
+        activeInstances.Clear();
+        Debug.Log("Conveyor: Reset durchgeführt.");
     }
 }
