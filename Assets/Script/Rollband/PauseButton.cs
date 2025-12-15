@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class StartButton : MonoBehaviour
+public class PauseButton : MonoBehaviour
 {
     public Conveyor conveyor;
 
     public void OnButtonClick()
     {
         if (conveyor == null) return;
-        conveyor.SpawnAndMove();
+        conveyor.TogglePause();
     }
 }
