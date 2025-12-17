@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Illegal
   - Legal
+  - Area
   layers:
   - Default
   - TransparentFX
