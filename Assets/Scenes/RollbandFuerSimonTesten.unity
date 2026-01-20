@@ -227,6 +227,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19908165}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &20020396 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: bdd8fb2c3427d9449ab279a176c84284, type: 3}
+  m_PrefabInstance: {fileID: 1752348172}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &54842786 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3587750393782493342, guid: 47e7308b8e380714c97bf34187da1b0a, type: 3}
@@ -4257,10 +4262,10 @@ MonoBehaviour:
   pointB: {fileID: 1122265038}
   speed: 2
   items:
-  - {fileID: 463617607}
-  - {fileID: 175281946}
-  - {fileID: 666179616}
-  - {fileID: 1281529157}
+  - {fileID: 20020396}
+  - {fileID: 20020396}
+  - {fileID: 20020396}
+  - {fileID: 20020396}
 --- !u!1 &1181186470
 GameObject:
   m_ObjectHideFlags: 0
@@ -5718,7 +5723,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bdd8fb2c3427d9449ab279a176c84284, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.81
+      value: 0.566
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bdd8fb2c3427d9449ab279a176c84284, type: 3}
       propertyPath: m_LocalPosition.z
