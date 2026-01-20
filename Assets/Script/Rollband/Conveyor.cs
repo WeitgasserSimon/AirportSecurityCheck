@@ -9,6 +9,10 @@ public class Conveyor : MonoBehaviour
 
     [Header("Conveyor Settings")]
     public float speed = 1f;
+    public float speedStep = 0.5f;
+    public float minSpeed = 1f;
+    public float maxSpeed = 10f;
+
     public List<GameObject> items; // Prefabs
 
     private GameObject currentItem;
@@ -16,6 +20,19 @@ public class Conveyor : MonoBehaviour
 
     void Update()
     {
+        // SPEED CONTROL
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            speed = Mathf.Min(speed + speedStep, maxSpeed);
+            Debug.Log("Conveyor Speed: " + speed);
+        }
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            speed = Mathf.Max(speed - speedStep, minSpeed);
+            Debug.Log("Conveyor Speed: " + speed);
+        }
+
         if (currentItem == null) return;
         if (isPaused) return;
 
@@ -35,8 +52,8 @@ public class Conveyor : MonoBehaviour
     // BUTTON 1
     public void SpawnAndMove()
     {
-        if (currentItem != null) return;      // schon eins unterwegs
-        if (isPaused) return;                 // pausiert → blockieren
+        if (currentItem != null) return;
+        if (isPaused) return;
         if (items == null || items.Count == 0) return;
 
         GameObject prefab = items[Random.Range(0, items.Count)];
@@ -55,10 +72,9 @@ public class Conveyor : MonoBehaviour
     // BUTTON 2
     public void TogglePause()
     {
-        if (currentItem == null) return; // nur wenn eins fährt
+        if (currentItem == null) return;
 
         isPaused = !isPaused;
-
         Debug.Log(isPaused ? "Conveyor: PAUSE" : "Conveyor: WEITER");
     }
 
