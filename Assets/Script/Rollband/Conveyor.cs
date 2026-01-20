@@ -10,7 +10,7 @@ public class Conveyor : MonoBehaviour
     [Header("Conveyor Settings")]
     public float speed = 1f;
     public float speedStep = 0.5f;
-    public float minSpeed = 0f;
+    public float minSpeed = 1f;
     public float maxSpeed = 10f;
 
     public List<GameObject> items; // Prefabs
