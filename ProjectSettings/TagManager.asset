@@ -8,6 +8,7 @@ TagManager:
   - Legal
   - Area
   - Halblegal
+  - FL
   layers:
   - Default
   - TransparentFX

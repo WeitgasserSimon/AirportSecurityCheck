@@ -3,7 +3,7 @@
 public class ColorChangeInArea : MonoBehaviour
 {
     [Range(0f, 1f)]
-    public float transparentAlpha = 0.5f;
+    public float transparentAlpha = 0.35f;
 
     private Material material;
     private Color originalColor;
@@ -22,17 +22,22 @@ public class ColorChangeInArea : MonoBehaviour
         if (CompareTag("Illegal"))
         {
             SetOpaque();
-            material.color = new Color(1f, 0f, 0f, 1f); // Rot, nicht transparent
+            material.color = new Color(1f, 0f, 0f, 1f); // 🔴 Rot
         }
         else if (CompareTag("Legal"))
         {
             SetTransparent();
-            material.color = new Color(0f, 1f, 0f, transparentAlpha); // Grün, transparent
+            material.color = new Color(0f, 1f, 0f, transparentAlpha); // 🟢 Grün
         }
         else if (CompareTag("Halblegal"))
         {
             SetTransparent();
-            material.color = new Color(1f, 1f, 0f, transparentAlpha); // Gelb, transparent
+            material.color = new Color(1f, 1f, 0f, transparentAlpha); // 🟡 Gelb
+        }
+        else if (CompareTag("FL"))
+        {
+            SetOpaque();
+            material.color = Color.black; // ⚫ SCHWARZ
         }
     }
 
@@ -45,7 +50,6 @@ public class ColorChangeInArea : MonoBehaviour
         SetOpaque();
     }
 
-    // 🔴 OPAK
     void SetOpaque()
     {
         material.SetOverrideTag("RenderType", "");
@@ -56,7 +60,6 @@ public class ColorChangeInArea : MonoBehaviour
         material.renderQueue = -1;
     }
 
-    // 🟢 TRANSPARENT
     void SetTransparent()
     {
         material.SetOverrideTag("RenderType", "Transparent");
